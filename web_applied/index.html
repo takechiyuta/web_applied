@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>キーボードで動くキャラクター改造</title>
+  <style>
+    #stage {
+      width: 600px;
+      height: 240px;
+      background-color: #f0f0f0;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid #333;
+      margin-bottom: 20px;
+    }
+    #box {
+      width: 48px;
+      height: 48px;
+      background-color: #ff4757;
+      position: absolute;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+ 
+  <!-- ステージとキャラクターのボックス -->
+  <div id="stage">
+    <div id="box"></div>
+  </div>
+
+  <ul>
+    <li>e.key：<span id="ekey">-</span></li>
+    <li>e.code：<span id="ecode">-</span></li>
+    <li>e.type：<span id="etype">-</span></li>
+  </ul>
+
+  <script>
+    const box = document.getElementById("box");
+
+    let x = 50;          // 横の位置（状態）
+    let y = 96;          // 縦の位置（状態）
+    let speed = 4;       // 1回に動く量（ダッシュで変化させるため let に変更）
+
+    const keys = {};     // 押されているキーを覚える入れ物（３-３のオブジェクト）
+
+    // 押したら true、離したら false を覚えておく
+    document.addEventListener("keydown", (e) => {
+      keys[e.code] = true;
+
+      // 画面下のリストにキー情報を表示する処理
+      document.getElementById("ekey").textContent = e.key;
+      document.getElementById("ecode").textContent = e.code;
+      document.getElementById("etype").textContent = e.type;
+    });
+
+    document.addEventListener("keyup", (e) => {
+      keys[e.code] = false;
+
+      // 離したときも情報を表示する
+      document.getElementById("ekey").textContent = e.key;
+      document.getElementById("ecode").textContent = e.code;
+      document.getElementById("etype").textContent = e.type;
+    });
+
+    // 状態（x, y）から表示を決める
+    function draw() {
+      box.style.left = x + "px";
+      box.style.top = y + "px";
+    }
+
+    // 一定の間隔（16ミリ秒ごと）に、押されているキーを見て動かす
+    function update() {
+      // 手順4：Spaceを押している間は速く動く（ダッシュ）
+      if (keys["Space"]) {
+        speed = 8;
+      } else {
+        speed = 4;
+      }
+
+      if (keys["ArrowRight"]) {
+        x = x + speed;
+      }
+      if (keys["ArrowLeft"]) {
+        x = x - speed;
+      }
+      if (keys["ArrowDown"]) {
+        y = y + speed;
+      }
+      if (keys["ArrowUp"]) {
+        y = y - speed;
+      }
+
+      // 手順2：画面の端（ステージ枠内）で止める処理
+      if (x < 0) {
+        x = 0;
+      }
+      if (x > 600 - 48) {
+        x = 600 - 48;
+      }
+      if (y < 0) {
+        y = 0;
+      }
+      if (y > 240 - 48) {
+        y = 240 - 48;
+      }
+
+      draw();
+    }
+
+    setInterval(update, 16);   // update を16ミリ秒ごとに呼ぶ（1秒に約60回）
+  </script>
+</body>
+</html>
