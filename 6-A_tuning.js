@@ -3,9 +3,9 @@ const ctx = canvas.getContext("2d");
 
 // 調整する数（手順4・手順5：キビキビ動くようにチューニング）
 const CONFIG = {
-  GRAVITY: 2500,          // 重力を強めて、キビキビ落とす
-  JUMP_SPEED: 800,        // ジャンプ初速を上げて、キビキビ跳ぶ
-  MOVE_SPEED: 400,        // 左右の移動速度を上げて、キビキビ走る
+  GRAVITY: 5000,          // 重力を強めて、キビキビ落とす
+  JUMP_SPEED: 1300,        // ジャンプ初速を上げて、キビキビ跳ぶ
+  MOVE_SPEED: 800,        // 左右の移動速度を上げて、キビキビ走る
   MAX_JUMPS: 2,           // 2段ジャンプあり
   FALL_GRAVITY_RATE: 2,   // 落ちるときはさらに重力を強くする
 };
