@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8">
-    <title>my game</title>
+    <title>HOP BIRD</title>
     <style>
       body {
         background-color: #0b1020;
@@ -16,15 +16,16 @@
     </style>
   </head>
   <body>
-    <h1>my game</h1>
+    <h1>HOP BIRD</h1>
     <canvas id="stage" width="640" height="360"></canvas>
     <p id="info"></p>
 
-    <!-- 読み込む順番：道具 → ステージ → プレイヤー → 敵 → 全体の流れ -->
+    <!-- 読み込む順番：道具 → ステージ → プレイヤー → 敵 → マウス → 全体の流れ -->
     <script src="tools.js"></script>
     <script src="stage.js"></script>
     <script src="player.js"></script>
     <script src="enemy.js"></script>
+    <script src="mouse.js"></script>
     <script src="main.js"></script>
   </body>
 </html>
