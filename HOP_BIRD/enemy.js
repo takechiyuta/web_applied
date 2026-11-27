@@ -1,6 +1,6 @@
 // 敵：作る・入れる・動かす・描く（足すものの形）
 
-const MAX_ENEMIES = 12;   // 敵は、同時にこの数まで（6 → 12 に増やす）
+const MAX_ENEMIES = 6;   // 敵は、同時にこの数まで（注文に合わせて少なめに）
 
 // ① 作る：敵を1体作って返す関数（呼ぶたびに、新しい敵が1体できる）
 function createEnemy(x, vx) {
@@ -10,31 +10,23 @@ function createEnemy(x, vx) {
 // ② 入れる：敵をまとめて入れる配列（７-６で入れ直すので let）
 let enemies = [];
 let spawnTimer = 0;   // 敵を出すタイマー
-let nextSpawn = 0.6;  // 次の敵を出すまでの時間（秒・最初は 0.6 秒で出す）
+let nextSpawn = 2;    // 次の敵を出すまでの時間（秒）
 
 // 最初の敵を入れ直す（★ main.js の resetGame から呼ばれる）
 function resetEnemies() {
   enemies = [];
-  enemies.push(createEnemy(120, 90));
-  enemies.push(createEnemy(240, -130));
-  enemies.push(createEnemy(420, 110));
-  enemies.push(createEnemy(540, -90));
+  enemies.push(createEnemy(220, 80));
+  enemies.push(createEnemy(460, -100));
 
-  // ７-Ａ：止まって動く敵を2体に増やす（1秒動いて、1秒止まる、をくり返す）
-  const stopper1 = createEnemy(180, 100);
-  stopper1.type = "stopper";
-  stopper1.timer = 0;
-  stopper1.moving = true;
-  enemies.push(stopper1);
-
-  const stopper2 = createEnemy(460, -100);
-  stopper2.type = "stopper";
-  stopper2.timer = 0;
-  stopper2.moving = true;
-  enemies.push(stopper2);
+  // ７-Ａ：止まって動く敵を1体足す（1秒動いて、1秒止まる、をくり返す）
+  const stopper = createEnemy(340, 90);
+  stopper.type = "stopper";
+  stopper.timer = 0;
+  stopper.moving = true;
+  enemies.push(stopper);
 
   spawnTimer = 0;
-  nextSpawn = 0.6;
+  nextSpawn = 2;
 }
 
 // 敵を時間で出す（タイマーの形・くり返す）
@@ -50,7 +42,7 @@ function spawnEnemies(dt) {
       }
     }
     spawnTimer = 0;
-    nextSpawn = 0.4 + Math.random() * 0.6;   // 次は 0.4〜1.0 秒のどれか
+    nextSpawn = 1.5 + Math.random() * 1.5;   // 次は 1.5〜3.0 秒のどれか
   }
 }
 
@@ -86,7 +78,10 @@ function updateEnemies(dt) {
 // プレイヤーとぶつかったとき：上から落ちてきたときだけ敵を倒し、横から当たったら HP を減らす
 function collideWithEnemies(prevBottom) {
   for (const enemy of enemies) {
-    if (aabb(player, enemy) && prevBottom <= enemy.y && player.vy > 0) {
+    // 1フレームで敵の上端を少し通り越しても、下向きの移動中かつ敵の上半分付近なら「踏んだ」と判定する
+    const isStomping = aabb(player, enemy) && player.vy > 0 && prevBottom <= enemy.y + 10;
+
+    if (isStomping) {
       enemy.alive = false;            // 倒した（状態を書き換える）
       player.vy = -JUMP_SPEED / 2;    // 踏んだら、少し跳ねる
       score = score + 1;              // 点数を足す（★ main.js の score を書き換える）
