@@ -1,6 +1,6 @@
 // 敵：作る・入れる・動かす・描く（足すものの形）
 
-const MAX_ENEMIES = 6;   // 敵は、同時にこの数まで
+const MAX_ENEMIES = 12;   // 敵は、同時にこの数まで（6 → 12 に増やす）
 
 // ① 作る：敵を1体作って返す関数（呼ぶたびに、新しい敵が1体できる）
 function createEnemy(x, vx) {
@@ -10,24 +10,31 @@ function createEnemy(x, vx) {
 // ② 入れる：敵をまとめて入れる配列（７-６で入れ直すので let）
 let enemies = [];
 let spawnTimer = 0;   // 敵を出すタイマー
-let nextSpawn = 2;    // 次の敵を出すまでの時間（秒）
+let nextSpawn = 0.6;  // 次の敵を出すまでの時間（秒・最初は 0.6 秒で出す）
 
 // 最初の敵を入れ直す（★ main.js の resetGame から呼ばれる）
 function resetEnemies() {
   enemies = [];
-  enemies.push(createEnemy(200, 80));
-  enemies.push(createEnemy(380, -120));
-  enemies.push(createEnemy(540, 60));
+  enemies.push(createEnemy(120, 90));
+  enemies.push(createEnemy(240, -130));
+  enemies.push(createEnemy(420, 110));
+  enemies.push(createEnemy(540, -90));
 
-  // ７-Ａ：止まって動く敵を1体足す（1秒動いて、1秒止まる、をくり返す）
-  const stopper = createEnemy(300, 100);
-  stopper.type = "stopper";
-  stopper.timer = 0;
-  stopper.moving = true;
-  enemies.push(stopper);
+  // ７-Ａ：止まって動く敵を2体に増やす（1秒動いて、1秒止まる、をくり返す）
+  const stopper1 = createEnemy(180, 100);
+  stopper1.type = "stopper";
+  stopper1.timer = 0;
+  stopper1.moving = true;
+  enemies.push(stopper1);
+
+  const stopper2 = createEnemy(460, -100);
+  stopper2.type = "stopper";
+  stopper2.timer = 0;
+  stopper2.moving = true;
+  enemies.push(stopper2);
 
   spawnTimer = 0;
-  nextSpawn = 2;
+  nextSpawn = 0.6;
 }
 
 // 敵を時間で出す（タイマーの形・くり返す）
@@ -43,7 +50,7 @@ function spawnEnemies(dt) {
       }
     }
     spawnTimer = 0;
-    nextSpawn = 1 + Math.random() * 2;   // 次は 1〜3 秒のどれか
+    nextSpawn = 0.4 + Math.random() * 0.6;   // 次は 0.4〜1.0 秒のどれか
   }
 }
 
@@ -83,9 +90,11 @@ function collideWithEnemies(prevBottom) {
       enemy.alive = false;            // 倒した（状態を書き換える）
       player.vy = -JUMP_SPEED / 2;    // 踏んだら、少し跳ねる
       score = score + 1;              // 点数を足す（★ main.js の score を書き換える）
+      combo = combo + 1;              // コンボを足す（★ main.js の combo を書き換える）
     } else if (aabb(player, enemy) && player.hitTimer <= 0) {
       player.hp = player.hp - 1;      // 横から当たった：HP を減らす（★ player.js の値を書き換える）
       player.hitTimer = HIT_TIME;     // しばらく当たらない
+      combo = 0;                      // ダメージを受けたらコンボリセット（★ main.js の combo を書き換える）
     }
   }
   enemies = enemies.filter((enemy) => enemy.alive);   // 生きている敵だけを残す

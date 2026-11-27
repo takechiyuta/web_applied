@@ -53,13 +53,14 @@ document.addEventListener("keyup", (e) => {
   keys[e.code] = false;
 });
 
-// 床とぶつかったら、位置を戻して、速さを決める
+// 床とぶつかったら、位置を戻して、速さを決める（着地したらコンボリセット）
 function collideWithFloor() {
   if (player.y + player.h > floor.y) {
     player.y = floor.y - player.h;
     player.vy = 0;
     player.isGrounded = true;
     player.jumpsLeft = MAX_JUMPS;
+    combo = 0;                      // 着地したらコンボリセット（★ main.js の combo を書き換える）
   } else {
     player.isGrounded = false;
   }

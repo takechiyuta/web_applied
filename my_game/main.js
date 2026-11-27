@@ -2,12 +2,14 @@
 
 let gameState = "title";   // ゲーム全体の状態："title"・"play"・"pause"・"gameover"
 let score = 0;             // 点数
+let combo = 0;             // 連続で倒した数
 
 // ゲームを最初の値に戻す（後から足す値も、ここに足す）
 function resetGame() {
   resetPlayer();
   resetEnemies();
   score = 0;
+  combo = 0;
 }
 
 // 始める：最初の値に戻してから、プレイ中にする
@@ -72,6 +74,12 @@ function drawHud() {
   ctx.strokeRect(500, 30, 120, 12);                       // HP バーの枠
   ctx.fillStyle = "#7ef5e1";
   ctx.fillRect(500, 30, 120 * player.hp / MAX_HP, 12);   // HP の分だけ塗る
+
+  // 2連続以上なら、コンボ表示を出す
+  if (combo >= 2) {
+    ctx.fillStyle = "#ffd166";
+    ctx.fillText(combo + "COMBO!", 500, 62);
+  }
 }
 
 // 役割ごとの「描く」関数を呼ぶ
